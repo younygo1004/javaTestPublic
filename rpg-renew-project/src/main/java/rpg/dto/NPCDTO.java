@@ -1,13 +1,12 @@
 package rpg.dto;
 
-public class PersonDTO {
+public class NPCDTO {
 
-    private String name;
+//    private String name;
+    private final String name;
     private int like;
 
-    public PersonDTO() {}
-
-    public PersonDTO(String name, int like) {
+    public NPCDTO(String name, int like) {
         this.name = name;
         this.like = like;
     }
@@ -16,9 +15,9 @@ public class PersonDTO {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+//    public void setName(String name) {
+//        this.name = name;
+//    }
 
     public int getLike() {
         return like;

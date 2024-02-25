@@ -3,7 +3,7 @@ package rpg.dto;
 import java.lang.reflect.Array;
 import java.util.List;
 
-public class Item {
+public abstract class Item {
 
     private String name;
     private int price;

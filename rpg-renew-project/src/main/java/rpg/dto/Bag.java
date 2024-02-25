@@ -5,47 +5,54 @@ import java.util.List;
 
 public class Bag {
 
-    private ArrayList<Item> bag = new ArrayList<>();
+//    private ArrayList<Item> itemList = new ArrayList<>();
+    private List<Item> itemList = new ArrayList<>();
     public Bag() {}
 
+    @Deprecated
     public void printBag() {
-        for(Item item : bag) {
+        for(Item item : itemList) {
             System.out.println(item + "/" + "나의 매력도 강화 : " + item.getCharm());
         }
     }
 
+    @Deprecated
     public void printGiftItem() {
-        for(Item item : bag) {
+        for(Item item : itemList) {
             if(item instanceof Gift) {
                 System.out.println(item);
             }
         }
     }
 
+    public List<Item> getItemList() {
+        return this.itemList;
+    }
+
     public List<Gift> getGiftList() {
         List<Gift> giftList = new ArrayList<>();
-        for(Item item : bag) {
+        for(Item item : itemList) {
             if (item instanceof Gift) giftList.add((Gift) item);
         }
         return giftList;
     }
 
 
-    public void hiItem(Item item) {
-        bag.add(item);
+    public void addItem(Item item) {
+        itemList.add(item);
     }
 
-    public void byeItem(Item item) {
-        bag.remove(item);
+    public void deleteItem(Item item) {
+        itemList.remove(item);
     }
 
     public String toString() {
-        String s = "";
+        StringBuilder s = new StringBuilder();
 
-        for (Item item : bag) {
-            s += item.getName() + ", ";
+        for (Item item : itemList) {
+            s.append(item.getName()).append(", ");
         }
 
-        return s;
+        return s.toString();
     }
 }
