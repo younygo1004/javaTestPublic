@@ -14,8 +14,8 @@ public class Inventory<T extends Item> {
 
     private final ItemStore itemStore;
 
-    public Inventory() {
-        this.itemStore = new ItemStore();
+    public Inventory(ItemStore itemStore){
+        this.itemStore = itemStore;
     }
 
     public boolean addItem(T item) {

@@ -3,6 +3,7 @@ package rpg.user.dto;
 import rpg.item.dto.Clothes;
 import rpg.item.dto.Gift;
 import rpg.item.dto.Item;
+import rpg.item.store.ItemStore;
 
 import java.util.InputMismatchException;
 import java.util.List;
@@ -11,7 +12,12 @@ public class UserDTO {
 
     private String name;
     private int charm;
-    private final Inventory inventory = new Inventory();
+
+    private final ItemStore itemStore = new ItemStore();
+    private final Inventory<Clothes> clothesInventory = new Inventory(itemStore);
+
+    private final Inventory<Gift> giftInventory = new Inventory<>(itemStore);
+
     private Item equippedItem;
     private int money = 10000000;
 
