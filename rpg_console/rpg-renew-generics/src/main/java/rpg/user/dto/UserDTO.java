@@ -6,6 +6,7 @@ import rpg.item.dto.Item;
 import rpg.item.store.ItemStore;
 import rpg.user.store.InventoryStore;
 
+import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
 
@@ -15,12 +16,6 @@ public class UserDTO {
     private int charm;
 
     private final InventoryStore inventoryStore = new InventoryStore();
-
-    @Deprecated
-    private final ItemStore itemStore = new ItemStore();
-
-    @Deprecated
-    private final OldInventory inventory = new OldInventory(itemStore);
 
     private Item equippedItem;
     private int money = 10000000;
@@ -44,24 +39,43 @@ public class UserDTO {
         this.charm = charm;
     }
 
-    public boolean obtainItem(Item item) {
-        return this.inventory.addItem(item);
+    public <T extends Item> boolean obtainItem(T item) {
+
+        @SuppressWarnings("unchecked")
+        List<T> itemList = (List<T>) this.inventoryStore.get(item.getClass());
+
+        if (itemList == null) {
+            itemList = new ArrayList<>();
+            itemList.add(item);
+             return this.inventoryStore.save(item.getClass(), itemList);
+        }
+
+        return itemList.add(item);
     }
 
-    public boolean loseItem(Item item) {
-        return this.inventory.deleteItem(item);
+    public <T extends Item> boolean loseItem(T item) {
+
+        @SuppressWarnings("unchecked")
+        List<T> itemList = (List<T>) this.inventoryStore.get(item.getClass());
+
+        // 아이템이 없으므로 아이템을 삭제할 수 없음
+        if (itemList == null) {
+            return false;
+        }
+
+        return itemList.remove(item);
     }
 
     public List<Clothes> getHaveClothesList() {
-        return this.inventory.getClothesItemList();
+        return this.inventoryStore.get(Clothes.class);
     }
 
     public List<Gift> getHaveGiftList() {
-        return this.inventory.getGiftItemList();
+        return this.inventoryStore.get(Gift.class);
     }
 
     public List<Item> getHaveAllItemList() {
-        return this.inventory.getAllItems();
+        return this.inventoryStore.getAll();
     }
 
     public Item getEquippedItem() {
@@ -116,7 +130,7 @@ public class UserDTO {
         return "■ ■ 내 상태 ■ ■ " + "\n"
                 + "[이름] : " + name + "\n"
                 + "[나의 매력도] : " + charm + "\n"
-                + "[소지품] : " + inventory.toString() + "\n"
+                + "[소지품] : " + inventoryStore.toString() + "\n"
                 + "[착용한 옷] : " + (equippedItem == null ? "없음" : equippedItem) + "\n"
                 + "[소지한 돈] : " + money + "원";
     }

@@ -1,29 +1,41 @@
 package rpg.user.store;
 
-import rpg.item.dto.Clothes;
-import rpg.item.dto.Gift;
 import rpg.item.dto.Item;
-import rpg.user.dto.Inventory;
-
-import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class InventoryStore {
-
-    private final Inventory<Clothes> clothesInventory;
-    private final Inventory<Gift> giftInventory;
-
     private final Map<Class<? extends Item>, Object> userItemStore;
 
     public InventoryStore() {
-        clothesInventory = new Inventory<>();
-        giftInventory = new Inventory<>();
         userItemStore = new HashMap<>();
-        userItemStore.put(Clothes.class, clothesInventory);
+    }
+
+    public <T extends Item> boolean save(Class<? extends Item> clazz, List<T> itemList) {
+
+        return this.userItemStore.put(clazz, itemList) != null;
 
     }
 
+    public <T extends Item> List<T> get(Class<T> clazz) {
 
+        @SuppressWarnings("unchecked")
+        List<T> itemList = (List<T>) this.userItemStore.get(clazz);
+
+        return itemList;
+    }
+
+    public List<Item> getAll() {
+        List<Item> allItemList = new ArrayList<>();
+        Collection<Object> itemValues = this.userItemStore.values();
+
+        itemValues.forEach((element) -> {
+
+            @SuppressWarnings("unchecked")
+            List<? extends Item> itemList = (List<? extends Item>) element;
+            allItemList.addAll(itemList);
+        });
+
+        return allItemList;
+    }
 
 }
