@@ -40,30 +40,11 @@ public class UserDTO {
     }
 
     public <T extends Item> boolean obtainItem(T item) {
-
-        @SuppressWarnings("unchecked")
-        List<T> itemList = (List<T>) this.inventoryStore.get(item.getClass());
-
-        if (itemList == null) {
-            itemList = new ArrayList<>();
-            itemList.add(item);
-             return this.inventoryStore.save(item.getClass(), itemList);
-        }
-
-        return itemList.add(item);
+        return this.inventoryStore.save(item);
     }
 
     public <T extends Item> boolean loseItem(T item) {
-
-        @SuppressWarnings("unchecked")
-        List<T> itemList = (List<T>) this.inventoryStore.get(item.getClass());
-
-        // 아이템이 없으므로 아이템을 삭제할 수 없음
-        if (itemList == null) {
-            return false;
-        }
-
-        return itemList.remove(item);
+        return this.inventoryStore.remove(item);
     }
 
     public List<Clothes> getHaveClothesList() {
