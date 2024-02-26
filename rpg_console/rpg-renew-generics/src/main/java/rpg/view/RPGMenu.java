@@ -1,14 +1,12 @@
 package rpg.view;
 
 
-import rpg.controller.Manager;
+import rpg.controller.RPGManager;
 import rpg.item.dto.Clothes;
 import rpg.item.dto.Gift;
 import rpg.item.dto.Item;
 import rpg.npc.dto.NPCDTO;
-import rpg.user.dto.UserDTO;
 
-import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -48,7 +46,7 @@ public class RPGMenu {
     }
 
     private Scanner sc = new Scanner(System.in);
-    private Manager manager = new Manager();
+    private RPGManager RPGManager = new RPGManager();
 
 
     public void menu() {
@@ -94,11 +92,11 @@ public class RPGMenu {
     public void insertUserName() {
         System.out.print("이름을 입력하세요 : ");
         String name = sc.nextLine();
-        manager.setUserName(name);
+        RPGManager.setUserName(name);
     }
 
     public void printUserStatus() {
-        System.out.println(manager.getUserInfo());
+        System.out.println(RPGManager.getUserInfo());
     }
 
     /**
@@ -107,10 +105,10 @@ public class RPGMenu {
      */
     public void viewUserInventory() {
         System.out.println("착용 중인 아이템 =============");
-        System.out.println((manager.getEquippedItem() == null ? "없음" : manager.getEquippedItem()));
+        System.out.println((RPGManager.getEquippedItem() == null ? "없음" : RPGManager.getEquippedItem()));
         System.out.println("소지품 ======================");
 
-        List<Item> itemList = manager.getUserItemList();
+        List<Item> itemList = RPGManager.getUserItemList();
 
         for (Item item : itemList) {
             System.out.println(item);
@@ -128,7 +126,7 @@ public class RPGMenu {
         System.out.print("누구랑 대화할까? : ");
         int npcType = sc.nextInt() - 1;
         sc.nextLine();
-        NPCDTO selectedNPC = manager.getNpcList()[npcType];
+        NPCDTO selectedNPC = RPGManager.getNpcList()[npcType];
         System.out.println(selectedNPC.getName() + "을/를 만났다!");
         System.out.println("============================");
         System.out.println("[1] 오늘 날씨 어때?");
@@ -152,7 +150,7 @@ public class RPGMenu {
     }
 
     public void talkAboutWeather(NPCDTO selectedNPC) {
-        System.out.println(manager.getUserName() + ": 오늘 날씨 어때?");
+        System.out.println(RPGManager.getUserName() + ": 오늘 날씨 어때?");
         System.out.println(selectedNPC.getName() + ": 화창한걸!");
         plusNPCLike(selectedNPC, 20);
 
@@ -160,18 +158,18 @@ public class RPGMenu {
     }
 
     public void talkAboutTrip(NPCDTO selectedNPC) {
-        System.out.println(manager.getUserName() + ": 우리 놀러갈래?!");
+        System.out.println(RPGManager.getUserName() + ": 우리 놀러갈래?!");
         if (selectedNPC.getLike() > 50) {
             System.out.println(selectedNPC.getName() + ": 좋아! 어디로 갈까?");
             System.out.println("둘은 어디로 놀러갈지 대화하기 시작했다...");
         } else {
             System.out.println(selectedNPC.getName() + ": 우리가..?");
-            System.out.println(manager.getUserName() + " 은/는 버려졌다....");
+            System.out.println(RPGManager.getUserName() + " 은/는 버려졌다....");
         }
     }
 
     public void talkAboutFood(NPCDTO selectedNPC) {
-        System.out.println(manager.getUserName() + ": 어제 뭐 먹고 잤니..?");
+        System.out.println(RPGManager.getUserName() + ": 어제 뭐 먹고 잤니..?");
         System.out.println(selectedNPC.getName() + ": 뭐?");
         minusNPCLike(selectedNPC, 100);
     }
@@ -189,9 +187,9 @@ public class RPGMenu {
         System.out.print("무엇을 줄까? : ");
         int selectedGift = sc.nextInt() - 1;
         sc.nextLine();
-        Gift givenGift = manager.getUserGiftList().get(selectedGift);
-        manager.presentGift(givenGift);
-        int changeLike = 30 + givenGift.getCharm() + manager.getUserCharm();
+        Gift givenGift = RPGManager.getUserGiftList().get(selectedGift);
+        RPGManager.presentGift(givenGift);
+        int changeLike = 30 + givenGift.getCharm() + RPGManager.getUserCharm();
 
         if (changeLike > 0) {
             plusNPCLike(selectedNPC, changeLike);
@@ -203,7 +201,7 @@ public class RPGMenu {
     }
 
     public boolean showGiftList() {
-        List<Gift> giftList = manager.getUserGiftList();
+        List<Gift> giftList = RPGManager.getUserGiftList();
 
         if (giftList == null) {
             return false;
@@ -218,13 +216,13 @@ public class RPGMenu {
 
     public void plusNPCLike(NPCDTO selectedNPC, int like) {
         System.out.println(selectedNPC.getName() + "의 호감도가 " + like + "만큼 상승했다!");
-        manager.plusNPCLike(selectedNPC, like);
+        RPGManager.plusNPCLike(selectedNPC, like);
         System.out.println(selectedNPC.getName() + "의 호감도가 " + selectedNPC.getLike() + "가 되었다.");
     }
 
     public void minusNPCLike(NPCDTO selectedNPC, int like) {
         System.out.println(selectedNPC.getName() + "의 호감도가 " + like + "만큼 하락했다....");
-        manager.minusNPCLike(selectedNPC, like);
+        RPGManager.minusNPCLike(selectedNPC, like);
         System.out.println(selectedNPC.getName() + "의 호감도가 " + selectedNPC.getLike() + "가 되었다.");
     }
 
@@ -245,14 +243,14 @@ public class RPGMenu {
             case 2 -> goToGiftShop();
         }
 
-        List<? extends Item> itemList = manager.getItemShopItemList(shopType);
+        List<? extends Item> itemList = RPGManager.getItemShopItemList(shopType);
         showItemList(itemList);
         System.out.print("어느 물건을 달라 할까? : ");
         int itemIndex = sc.nextInt() - 1;
 
-        Item buyItem = manager.buyItem(shopType, itemIndex);
+        Item buyItem = RPGManager.buyItem(shopType, itemIndex);
 
-        if (manager.getUserMoney() < buyItem.getPrice()) {
+        if (RPGManager.getUserMoney() < buyItem.getPrice()) {
             System.out.println("돈이 없다. 아르바이트를 하러 가볼까?");
             return;
         }
@@ -260,12 +258,12 @@ public class RPGMenu {
 
         System.out.println(buyItem.getName() + "을/를 샀다!");
         System.out.println(buyItem.getPrice() + "원 사용했다.");
-        manager.minusUserMoney(buyItem.getPrice());
-        System.out.println(manager.getUserMoney() + "원 남았다.");
+        RPGManager.minusUserMoney(buyItem.getPrice());
+        System.out.println(RPGManager.getUserMoney() + "원 남았다.");
 
         if (buyItem instanceof Clothes) {
-            manager.equipItem((Clothes) buyItem);
-            System.out.println("아이템을 착용하여 매력도가 " + manager.getUserCharm() + "가 되었다!");
+            RPGManager.equipItem((Clothes) buyItem);
+            System.out.println("아이템을 착용하여 매력도가 " + RPGManager.getUserCharm() + "가 되었다!");
         }
 
 
@@ -337,23 +335,23 @@ public class RPGMenu {
 
     public void takeMoney(int money) {
         System.out.println("총 " + money + "원을 벌었다.");
-        manager.takeMoney(money);
+        RPGManager.takeMoney(money);
     }
 
     public void loseCharm(int charm) {
         System.out.println("나의 매력이" + charm + " 하락했다.");
-        manager.loseCharm(charm);
+        RPGManager.loseCharm(charm);
     }
 
     public void printCharm() {
-        NPCDTO[] npcList = manager.getNpcList();
+        NPCDTO[] npcList = RPGManager.getNpcList();
         for (NPCDTO npc : npcList) {
             System.out.println(npc);
         }
     }
 
     public void printNPCList() {
-        NPCDTO[] npcList = manager.getNpcList();
+        NPCDTO[] npcList = RPGManager.getNpcList();
 
         for (int i = 0; i < npcList.length; i++) {
             // NPC의 이름과 번호를 출력한다.

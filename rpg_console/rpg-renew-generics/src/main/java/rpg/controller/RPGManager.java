@@ -5,18 +5,14 @@ import rpg.item.dto.Clothes;
 import rpg.item.dto.Gift;
 import rpg.item.dto.Item;
 import rpg.npc.dto.NPCDTO;
-import rpg.shop.ClothesShopOld;
-import rpg.shop.GiftShopOld;
 import rpg.shop.ItemShop;
-import rpg.shop.ItemShopOld;
-import rpg.user.dto.Bag;
 import rpg.user.dto.UserDTO;
 
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
 
-public class Manager {
+public class RPGManager {
 
     private UserDTO userDTO = new UserDTO();
     private NPCDTO[] npcList = new NPCDTO[]{
@@ -38,7 +34,7 @@ public class Manager {
             new Gift("슈퍼카", 100000000, -1000)
     )));
 
-    public Manager() {
+    public RPGManager() {
     }
 
     public void setUserName(String name) {
@@ -125,15 +121,6 @@ public class Manager {
         return this.clothesItemShop.getItemList();
     }
 
-//    @Deprecated
-//    public Clothes getBuyClothes(int index) {
-//        return this.clothesItemShop.sellItem(index);
-//    }
-//
-//    @Deprecated
-//    public Gift getBuyGift(int index) {
-//        return this.giftItemShop.sellItem(index);
-//    }
 
     public NPCDTO[] getNpcList() {
         return this.npcList;
@@ -159,7 +146,7 @@ public class Manager {
         selectedNPC.setLike(selectedNPC.getLike() - like);
     }
 
-    public <T extends Item> boolean presentGift(T item) {
+    public boolean presentGift(Gift item) {
         return userDTO.loseItem(item);
     }
 

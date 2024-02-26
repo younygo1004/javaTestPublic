@@ -8,6 +8,7 @@ public abstract class TypeReference<T>{
 
     public TypeReference() {
         this.type = ((ParameterizedType)getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+
     }
 
     public Type getType() {

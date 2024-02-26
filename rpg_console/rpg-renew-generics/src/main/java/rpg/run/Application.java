@@ -1,12 +1,17 @@
 package rpg.run;
 
+import rpg.user.store.InventoryStore;
 import rpg.view.RPGMenu;
 
 public class Application {
 
     public static void main(String[] args) {
-        RPGMenu menu = new RPGMenu();
-        menu.menu();
+
+        InventoryStore inventoryStore = new InventoryStore();
+
+//        RPGMenu menu = new RPGMenu();
+//        menu.menu();
+
     }
 
 }
