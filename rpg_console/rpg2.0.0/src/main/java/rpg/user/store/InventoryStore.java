@@ -19,9 +19,10 @@ public class InventoryStore {
         if (itemList == null) {
             itemList = new ArrayList<>();
             itemList.add(item);
+            return this.userItemStore.put(item.getClass(), itemList) != null;
         }
 
-        return this.userItemStore.put(item.getClass(), itemList) != null;
+        return itemList.add(item);
 
     }
 
