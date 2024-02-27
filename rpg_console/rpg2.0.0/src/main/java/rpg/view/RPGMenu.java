@@ -8,6 +8,7 @@ import rpg.item.dto.Item;
 import rpg.npc.dto.NPCDTO;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Scanner;
 
 /**
@@ -93,14 +94,9 @@ public class RPGMenu {
         System.out.println("착용 중인 아이템 =============");
         System.out.println((RPGManager.getEquippedItem() == null ? "없음" : RPGManager.getEquippedItem()));
         System.out.println("소지품 ======================");
-
         List<Item> itemList = RPGManager.getUserItemList();
 
         itemList.forEach(System.out::println);
-//
-//        for (Item item : itemList) {
-//            System.out.println(item);
-//        }
 
     }
 
@@ -190,7 +186,7 @@ public class RPGMenu {
         System.out.println("============================");
 
         // 줄 선물이 없으면 선물을 주지 못한다.
-        if (!showGiftList()) {
+        if (!showListElementsWithIndex(RPGManager.getUserGiftList())) {
             return; // 줄 선물이 없으므로 대화가 종료된다
         }
 
@@ -212,9 +208,10 @@ public class RPGMenu {
 
     /**
      * 유저가 가진 선물을 모두 보여주는 Method
-     * 추후 showItemList와 통합이 필요해 보임
+     * 해당 Method보다는 showListElementsWithIndex를 사용할 것
      * @return 유저가 가진 선물이 있으면 true, 없으면 false 반환
      */
+    @Deprecated
     public boolean showGiftList() {
         List<Gift> giftList = RPGManager.getUserGiftList();
 
@@ -277,8 +274,7 @@ public class RPGMenu {
             case 2 -> goToGiftShop();
         }
 
-        List<? extends Item> itemList = RPGManager.getItemShopItemList(shopType);
-        showItemList(itemList);
+        showListElementsWithIndex(RPGManager.getItemShopItemList(shopType));
         System.out.print("어느 물건을 달라 할까? : ");
         int itemIndex = sc.nextInt() - 1;
 
@@ -323,10 +319,19 @@ public class RPGMenu {
 
     }
 
-    public void showItemList(List<? extends Item> itemList) {
-        for (Item item : itemList) {
-            System.out.println("[" + (itemList.indexOf(item) + 1) + "]" + item);
-        }
+    public <T> boolean showListElementsWithIndex(List<T> list) {
+
+        if (list == null) return false;
+
+        list.forEach((element) -> {
+            System.out.println("[" + (list.indexOf(element) + 1) + "]" + element);
+        });
+
+//        for (T element : list) {
+//            System.out.println("[" + (list.indexOf(element) + 1) + "]" + element);
+//        }
+
+        return !list.isEmpty();
 
     }
 
@@ -384,6 +389,10 @@ public class RPGMenu {
         }
     }
 
+    /**
+     * 추후 StringJoiner를 통해 가독성을 증가시킬 필요가 있어보임.
+     * 또한 다양한 타입을 지원하는 print Method를 추가할 것도 고려해볼 요소이다.
+     */
     public void printNPCList() {
         NPCDTO[] npcList = RPGManager.getNpcList();
 
