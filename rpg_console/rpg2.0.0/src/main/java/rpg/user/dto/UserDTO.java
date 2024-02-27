@@ -10,6 +10,11 @@ import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
 
+/**
+ * 유저의 정보를 저장하는 DTO
+ * 현재는 원활한 테스트를 위해 기본 소지금을 10_000_000으로 설정해 두었다.
+ * 추후 수정 요망
+ */
 public class UserDTO {
 
     private String name;
@@ -18,7 +23,7 @@ public class UserDTO {
     private final InventoryStore inventoryStore = new InventoryStore();
 
     private Item equippedItem;
-    private int money = 10000000;
+    private int money = 10_000_000;
 
     public UserDTO() {
     }

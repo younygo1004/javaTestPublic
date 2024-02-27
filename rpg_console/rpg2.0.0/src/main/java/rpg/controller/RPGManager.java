@@ -12,6 +12,10 @@ import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
 
+/**
+ * RPG 게임의 View에서 요청한 데이터를 처리하는 Controller
+ * View(RPGMenu) 모든 요청 데이터는 해당 Controller(RPGManager)에서 책임진다.
+ */
 public class RPGManager {
 
     private UserDTO userDTO = new UserDTO();

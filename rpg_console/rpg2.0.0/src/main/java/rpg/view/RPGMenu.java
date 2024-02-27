@@ -10,42 +10,20 @@ import rpg.npc.dto.NPCDTO;
 import java.util.List;
 import java.util.Scanner;
 
-/*
- * 리팩토링 목표
- * - 현재의 요구사항이 아닌, 미래의 요구사항을 가정하여 만들 것이다.
- * - 따라서 Over Engineering된 프로젝트가 생성될 수 있으므로, 감안하고 보도록 하자.
- * - Super Type Token을 이용한 리팩토링까지 끝난 후, 새로운 요구사항들을 만들어 비교하는 것이 최종 목표이다.
- *
- *
- *  리팩토링 계획
- *  1. 로직을 Method로 분리하자.
- *  2. Interface를 사용할 수 있는 필드는 구현체 대신 Interface를 사용하자.
- *  3. Shop 객체 (ClothesShop, GiftShop)의 공통 기능을 강제하도록 Interface를 사용하자
- *  3-1. Shop을 단계별로 수정하여 최종적으로는 Type-Safety를 최대한 보장하도록 하자.
- *  4. 문서화는 필수다.
- *  5. 변수의 이름을 제대로 짓자.
- *  6. 프로젝트의 구조를 최대한 수정하지 않고, 확장성을 최대한 높여보자
- *  7. 현재 Controller단과 View 단의 경계가 모호하다.
- *  7-1. 따라서 Controller를 Server / View를 Client라고 가정하고 로직을 분리하도록 하자.
- *  8. 각 DTO의 데이터 수정은 최대한 DTO 내에서 진행하도록 하자.
- *  9. 패키지 구조를 조금 더 명확하게 만들도록 하자.
- *  10. 기존 클래스를 변경된 클래스로 대체하고, 기존 클래스에는 @Deprecated Annotation을 붙여 경고를 주자.
- *  11. 모든 객체, 모든 필드는 최대한 final, private로 기술하고, setter 또한 최대한 지양하도록 하자.
- *  11-1. 그 이유는 최대한 불변성을 보장하기 위함이다.
- *
- *  기타
- *  - rpg-renew-project에서는 최대한 Generic을 덜 사용할 것이다.
- *  - 그 이유는 Generic을 사용했을 때와 다시 비교하기 위함이다.
- *  - Generic을 사용한 기법은 rpg-renewal-generic-project라는 이름으로 새롭게 만들 것이다.
- *
+/**
+ * 해당 게임의 View 역할을 하는 Class 객체
+ * RPG Game의 출력을 담당하며, 데이터의 처리는 Controller로 기능하는 RPGManager가 담당한다.
+ * 따라서 View를 담당하는 RPGMenu에서 데이터를 처리할 일이 있으면 RPGManager에 위임한다.
  */
-
 public class RPGMenu {
 
     public RPGMenu() {
     }
 
+    // 사용자의 입력을 받을 Scanner 객체
     private Scanner sc = new Scanner(System.in);
+
+    // 데이터의 처리를 담당할 RPGManager
     private RPGManager RPGManager = new RPGManager();
 
 
@@ -54,7 +32,7 @@ public class RPGMenu {
         System.out.println("두근두근(?) 연애 시뮬레이션!");
         insertUserName();
 
-
+        // 유저가 게임을 종료할 때까지 게임을 반복한다.
         while (true) {
             System.out.println("============ 메뉴 ============");
             System.out.println("1. 이름 변경하기");
@@ -70,8 +48,9 @@ public class RPGMenu {
             int selectNum = sc.nextInt();
             sc.nextLine();
 
+            // 1~8번의 선택지에 대응하는 Method 실행
             switch (selectNum) {
-                case 1 -> insertUserName();
+                case 1 -> insertUserName(); 
                 case 2 -> printUserStatus();
                 case 3 -> viewUserInventory();
                 case 4 -> talkToNPC();
@@ -88,6 +67,9 @@ public class RPGMenu {
 
     /**
      * 유저의 이름을 Scanner로 입력받아 변경하는 메소드
+     * 유저의 이름을 변경하는 것은 Controller가 담당한다.
+     * 경우에 따라 이름을 잘 변경했는지에 대한 값을 Manger에서 받아와야 한다.
+     * 따라서 필요에 따라 Manager의 setUserName() Method가 true/false를 반환하도록 수정 필요
      */
     public void insertUserName() {
         System.out.print("이름을 입력하세요 : ");
@@ -95,6 +77,9 @@ public class RPGMenu {
         RPGManager.setUserName(name);
     }
 
+    /**
+     * 유저의 정보를 Manager로부터 받아와 출력하는 Method
+     */
     public void printUserStatus() {
         System.out.println(RPGManager.getUserInfo());
     }
@@ -102,6 +87,7 @@ public class RPGMenu {
     /**
      * 유저의 인벤토리를 보여주는 메소드
      * 착용중인 아이템을 상단에 먼저 보여준 후, 인벤토리에 있는 아이템을 보여준다.
+     * 출력문이 올바른지 확인 필요!
      */
     public void viewUserInventory() {
         System.out.println("착용 중인 아이템 =============");
@@ -110,15 +96,18 @@ public class RPGMenu {
 
         List<Item> itemList = RPGManager.getUserItemList();
 
-        for (Item item : itemList) {
-            System.out.println(item);
-        }
+        itemList.forEach(System.out::println);
+//
+//        for (Item item : itemList) {
+//            System.out.println(item);
+//        }
 
     }
 
 
     /**
      * 누구와 대화할지를 선택하여 대화하는 메소드
+     * 또한 대화 선택지에 따라 행동이 바뀌는 로직까지 해당 메소드에서 처리한다.
      */
     public void talkToNPC() {
         printNPCList();
@@ -149,6 +138,11 @@ public class RPGMenu {
 
     }
 
+    /**
+     * 유저가 오늘 날씨에 대해 물어보는 선택지를 선택했을 시 실행되는 Method
+     * @param selectedNPC 대화할 NPC 객체의 주소 값.
+     *                    유저가 선택한 NPC의 객체의 주소 값을 전달.
+     */
     public void talkAboutWeather(NPCDTO selectedNPC) {
         System.out.println(RPGManager.getUserName() + ": 오늘 날씨 어때?");
         System.out.println(selectedNPC.getName() + ": 화창한걸!");
@@ -157,6 +151,11 @@ public class RPGMenu {
 
     }
 
+    /**
+     * 유저가 "놀러가자" 선택지를 선택했을 시 실행되는 Method
+     * @param selectedNPC 대화할 NPC 객체의 주소 값.
+     *                    유저가 선택한 NPC의 객체의 주소 값을 전달.
+     */
     public void talkAboutTrip(NPCDTO selectedNPC) {
         System.out.println(RPGManager.getUserName() + ": 우리 놀러갈래?!");
         if (selectedNPC.getLike() > 50) {
@@ -168,12 +167,23 @@ public class RPGMenu {
         }
     }
 
+    /**
+     * 유저가 "어제 뭐 먹고 잤니?" 선택지를 선택했을 시 실행되는 Method
+     * @param selectedNPC 대화할 NPC 객체의 주소 값.
+     *                    유저가 선택한 NPC의 객체의 주소 값을 전달.
+     */
     public void talkAboutFood(NPCDTO selectedNPC) {
         System.out.println(RPGManager.getUserName() + ": 어제 뭐 먹고 잤니..?");
         System.out.println(selectedNPC.getName() + ": 뭐?");
         minusNPCLike(selectedNPC, 100);
     }
 
+    /**
+     * 유저가 선물을 주는 경우에 실행되는 Method
+     * 가지고 있는 선물 중에서 하나를 선택해서 전달할 수 있다.
+     * @param selectedNPC 대화할 NPC 객체의 주소 값.
+     *                    유저가 선택한 NPC의 객체의 주소 값을 전달.
+     */
     public void presentGift(NPCDTO selectedNPC) {
 //        UserDTO userInfo = manager.getUserInfo();
         System.out.println("가지고 있는 선물");
@@ -181,7 +191,7 @@ public class RPGMenu {
 
         // 줄 선물이 없으면 선물을 주지 못한다.
         if (!showGiftList()) {
-            return;
+            return; // 줄 선물이 없으므로 대화가 종료된다
         }
 
         System.out.print("무엇을 줄까? : ");
@@ -200,6 +210,11 @@ public class RPGMenu {
         }
     }
 
+    /**
+     * 유저가 가진 선물을 모두 보여주는 Method
+     * 추후 showItemList와 통합이 필요해 보임
+     * @return 유저가 가진 선물이 있으면 true, 없으면 false 반환
+     */
     public boolean showGiftList() {
         List<Gift> giftList = RPGManager.getUserGiftList();
 
@@ -214,23 +229,42 @@ public class RPGMenu {
 
     }
 
+    /**
+     * NPC의 호감도가 증가하는 경우 호출되는 통합 Method
+     * NPC의 호감도 상태를 표시해 준다.
+     * @param selectedNPC 유저가 선택한 NPC 객체의 주소 값
+     * @param like 증가시킬 호감도의 수치
+     */
     public void plusNPCLike(NPCDTO selectedNPC, int like) {
         System.out.println(selectedNPC.getName() + "의 호감도가 " + like + "만큼 상승했다!");
         RPGManager.plusNPCLike(selectedNPC, like);
         System.out.println(selectedNPC.getName() + "의 호감도가 " + selectedNPC.getLike() + "가 되었다.");
     }
 
+    /**
+     * NPC의 호감도가 감소하는 경우 호출되는 통합 Method
+     * NPC의 호감도 상태를 표시해 준다.
+     * @param selectedNPC 유저가 선택한 NPC 객체의 주소 값
+     * @param like 감소시킬 호감도의 수치
+     */
     public void minusNPCLike(NPCDTO selectedNPC, int like) {
         System.out.println(selectedNPC.getName() + "의 호감도가 " + like + "만큼 하락했다....");
         RPGManager.minusNPCLike(selectedNPC, like);
         System.out.println(selectedNPC.getName() + "의 호감도가 " + selectedNPC.getLike() + "가 되었다.");
     }
 
+    /**
+     * 유저가 아무것도 하지 않는 경우에 실행할 Method
+     */
     public void nothingHappened() {
         System.out.println("아무 일도 일어나지 않았다.....");
     }
 
 
+    /**
+     * 유저가 아이템 구매 선택지를 선택했을 시 실행되는 Method
+     * 어느 가게에서 쇼핑할 것인지 또한 이 메소드에서 선택지를 받아 처리한다.
+     */
     public void goToItemShop() {
         System.out.println("1. 옷 가게 / 2. 선물 가게");
         System.out.println("============================");

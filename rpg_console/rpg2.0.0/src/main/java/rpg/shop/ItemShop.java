@@ -7,6 +7,11 @@ import rpg.util.TypeReference;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Item Class를 상속받는 모든 Item에 대응하는 Generic Class
+ * Item 상점의 구현이 필요한 경우, 해당 Class의 사용을 고려할 수 있다.
+ * @param <T> 판매할 Item의 종류
+ */
 public class ItemShop<T extends Item> {
 
     private List<T> itemList;
