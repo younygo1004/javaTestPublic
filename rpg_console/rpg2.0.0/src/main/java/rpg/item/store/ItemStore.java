@@ -7,12 +7,12 @@ import java.lang.reflect.Type;
 import java.util.*;
 
 /**
- * 해당 Class는 원래 ItemList를 저장하기 위해 정의하였다.
- * 그러나 현재는 user.store 패키지의 InventoryStore가 더 Type-Safety 하므로,
- * 해당 클래스보다는 InventoryStore의 사용을 고려할 수 있다.
+ * 해당 Class는 원래 List<Item> 객체를 저장하기 위해 정의하였다.
+ * 그러나 해당 클래스는 List를 저장할 때, 반드시 Super Type Token을 전달해야 한다.
+ * 현재 user.dto 패키지에 List<Item>을 담는 특화 Class InventoryStore가 있기 때문에
+ * 해당 Class와 InventoryStore Class 중 용도에 맞는 것을 신중히 결정하는 것이 좋다.
  * 추후 InventoryStore Class 재정의 혹은 새로운 통합 Store Class를 만들어 사용을 고려하자.
  */
-@Deprecated
 public class ItemStore {
 
     private final Map<Type, Object> itemStore = new HashMap<>();
