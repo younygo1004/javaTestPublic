@@ -11,7 +11,7 @@ import java.lang.reflect.Type;
  *           Generic Type이 아닌 경우, Class<T> Class의 사용을 고려할 것
  */
 public abstract class TypeReference<T>{
-    private Type type;
+    private final Type type;
 
     public TypeReference() {
         this.type = ((ParameterizedType)getClass().getGenericSuperclass()).getActualTypeArguments()[0];
