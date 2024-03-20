@@ -323,13 +323,8 @@ public class RPGMenu {
 
         if (list == null) return false;
 
-        list.forEach((element) -> {
-            System.out.println("[" + (list.indexOf(element) + 1) + "]" + element);
-        });
-
-//        for (T element : list) {
-//            System.out.println("[" + (list.indexOf(element) + 1) + "]" + element);
-//        }
+        list.forEach((element) ->
+                System.out.println("[" + (list.indexOf(element) + 1) + "]" + element));
 
         return !list.isEmpty();
 
