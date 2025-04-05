@@ -23,7 +23,7 @@ public class StreamTest {
         testList2.add("114");
 
 
-        List<String> collect = testList1.stream().collect(Collectors.toList());
+        List<String> collect = testList1.stream().toList();
         List<String> collect1 = testList2.stream().collect(Collectors.toList());
 
         System.out.println(collect.getClass());
