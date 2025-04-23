@@ -23,6 +23,8 @@ public class GenericTest2 {
         System.out.println(i2);
         System.out.println("---------------------------");
 
+        TestGenericExtends<Number> tgn = new TestGenericExtends<>(1);
+
 //        Integer i3 = (Integer) tg.testNumber(1.5); // runtime : ClassCastException
 
 
